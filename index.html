@@ -1,0 +1,1439 @@
+cat > /mnt/user-data/outputs/fruitree.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fruitree — Grow Your Terrace Garden</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g:#1C4A2E;--g2:#2d6b45;--g3:#0f3320;
+  --sage:#6B9E5E;--lsage:#EAF3DE;--msage:#A8D97A;
+  --terra:#C4622D;--terra2:#993C1D;
+  --cream:#F8F2E8;--warm:#FEFAF5;--gold:#D4A853;
+  --text:#1a1a1a;--muted:#6B6B65;--border:rgba(0,0,0,0.09);
+  --radius:14px;--radiuslg:20px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--warm);color:var(--text);min-height:100vh}
+.fraunces{font-family:'Fraunces',serif}
+h1,h2,h3{font-family:'Fraunces',serif}
+
+/* ─── UTILITIES ─── */
+.container{max-width:1200px;margin:0 auto;padding:0 28px}
+.section{padding:72px 0}
+.tag{display:inline-block;padding:3px 11px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:.04em}
+.badge-sale{background:#FAEEDA;color:#854F0B}
+.badge-hot{background:#FAECE7;color:#993C1D}
+.badge-new{background:#EAF3DE;color:#27500A}
+.badge-best{background:var(--g);color:#fff}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:22px}
+
+/* ─── BUTTONS ─── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:100px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:14px;cursor:pointer;transition:all .2s;border:none;text-decoration:none}
+.btn-primary{background:var(--g);color:#fff}.btn-primary:hover{background:var(--g3);transform:translateY(-1px)}
+.btn-sage{background:var(--msage);color:var(--g)}.btn-sage:hover{background:#91c860}
+.btn-outline{background:transparent;color:var(--g);border:1.5px solid var(--g)}.btn-outline:hover{background:var(--lsage)}
+.btn-ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.35)}.btn-ghost:hover{background:rgba(255,255,255,.1)}
+.btn-terra{background:var(--terra);color:#fff}.btn-terra:hover{background:var(--terra2)}
+.btn-sm{padding:7px 16px;font-size:13px}
+.btn-block{width:100%;justify-content:center;padding:13px}
+
+/* ─── CARDS ─── */
+.card{background:#fff;border-radius:var(--radiuslg);border:1px solid var(--border);overflow:hidden;transition:all .25s}
+.card:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(28,74,46,.1)}
+.card-flat{background:#fff;border-radius:var(--radiuslg);border:1px solid var(--border);padding:24px}
+
+/* ─── NAV ─── */
+#site-nav{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(0,0,0,.04)}
+.nav-inner{display:flex;align-items:center;gap:20px;height:66px}
+.logo{font-size:24px;font-weight:700;color:var(--g);cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;text-decoration:none;font-family:'Fraunces',serif}
+.nav-links{display:flex;gap:4px;flex:1}
+.nav-link{padding:7px 13px;border-radius:100px;background:none;border:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s}
+.nav-link:hover,.nav-link.active{color:var(--g);background:var(--lsage);font-weight:600}
+.search-bar{display:flex;align-items:center;background:var(--cream);border-radius:100px;padding:8px 16px;gap:8px;flex:1;max-width:340px;border:1.5px solid var(--border)}
+.search-bar input{border:none;background:transparent;outline:none;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);width:100%}
+.cart-btn{position:relative;display:flex;align-items:center;gap:6px}
+.cart-count{background:var(--terra);color:#fff;border-radius:100px;padding:1px 7px;font-size:11px;font-weight:700}
+.pill-bar{background:#fff;border-bottom:1px solid var(--border);padding:12px 0;position:sticky;top:66px;z-index:190}
+.pill-scroll{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.pill-scroll::-webkit-scrollbar{display:none}
+.pill{padding:8px 18px;border-radius:100px;border:1.5px solid var(--border);background:#fff;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .15s;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif}
+.pill:hover,.pill.active{background:var(--g);color:#fff;border-color:var(--g)}
+
+/* ─── HERO ─── */
+#hero{background:linear-gradient(135deg,var(--g) 0%,var(--g2) 55%,#3d7a52 100%);padding:80px 0 90px;position:relative;overflow:hidden}
+#hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 2px 2px,rgba(255,255,255,.04) 1px,transparent 0);background-size:32px 32px}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:center}
+.hero-title{font-size:54px;font-weight:500;color:#fff;line-height:1.1;margin-bottom:18px}
+.hero-title em{color:var(--msage);font-style:italic}
+.hero-desc{color:rgba(255,255,255,.7);font-size:16px;line-height:1.75;margin-bottom:30px;max-width:440px}
+.hero-stats{display:flex;gap:36px;margin-top:36px}
+.stat-val{font-size:22px;color:var(--msage);font-weight:700;font-family:'Fraunces',serif}
+.stat-label{font-size:12px;color:rgba(255,255,255,.5);margin-top:2px}
+.hero-right{display:flex;flex-direction:column;gap:14px}
+.hero-tag-grid{display:flex;flex-wrap:wrap;gap:10px}
+.hero-tag{background:rgba(255,255,255,.1);color:#fff;padding:8px 16px;border-radius:100px;font-size:14px;border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(4px)}
+.delivery-card{background:rgba(255,255,255,.08);border-radius:16px;padding:18px 20px;border:1px solid rgba(255,255,255,.12)}
+
+/* ─── HOW IT WORKS ─── */
+#how{background:var(--cream)}
+.how-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:40px}
+.how-step{background:#fff;border-radius:var(--radiuslg);padding:28px 22px;text-align:center;border:1px solid var(--border);position:relative}
+.how-step::after{content:attr(data-arrow);position:absolute;right:-16px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--sage);z-index:1}
+.how-step:last-child::after{display:none}
+.step-num{width:44px;height:44px;background:var(--lsage);color:var(--g);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;margin:0 auto 14px;font-family:'Fraunces',serif}
+.step-icon{font-size:32px;margin-bottom:12px}
+.step-title{font-size:15px;font-weight:700;color:var(--g);margin-bottom:6px}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* ─── SHOP ─── */
+.product-img{height:170px;display:flex;align-items:center;justify-content:center;font-size:72px;background:var(--cream);position:relative}
+.product-body{padding:16px}
+.product-farm{font-size:11px;color:var(--sage);font-weight:700;letter-spacing:.04em}
+.product-name{font-size:15px;font-weight:700;margin:4px 0;line-height:1.3}
+.product-desc{font-size:12px;color:var(--muted);line-height:1.55;margin-bottom:10px}
+.rating{display:flex;align-items:center;gap:4px}
+.stars{color:var(--gold);font-size:13px}
+.rat-num{font-size:13px;font-weight:600}
+.rat-cnt{font-size:12px;color:var(--muted)}
+.product-footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.price{font-size:20px;font-weight:600;color:var(--g);font-family:'Fraunces',serif}
+.price-orig{font-size:12px;color:var(--muted);text-decoration:line-through;margin-left:4px}
+.badge-corner{position:absolute;top:10px;left:10px}
+.badge-corner2{position:absolute;top:10px;right:10px}
+
+/* ─── PRODUCT DETAIL MODAL ─── */
+.pdm-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:32px}
+.pdm-img{background:var(--cream);border-radius:16px;height:280px;display:flex;align-items:center;justify-content:center;font-size:100px}
+.care-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.care-item{background:var(--cream);border-radius:10px;padding:10px;text-align:center}
+.care-icon{font-size:20px;margin-bottom:4px}
+.care-label{font-size:11px;color:var(--muted);font-weight:600}
+.care-val{font-size:12px;font-weight:600;color:var(--g)}
+.review-item{border-bottom:1px solid var(--border);padding:12px 0}
+.review-item:last-child{border:none}
+
+/* ─── CONSULTANTS ─── */
+#consultants{background:var(--cream)}
+.cons-card{background:#fff;border-radius:var(--radiuslg);border:1px solid var(--border);padding:24px;transition:all .25s}
+.cons-card:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(28,74,46,.1)}
+.cons-avatar{width:56px;height:56px;border-radius:50%;background:var(--lsage);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:var(--g);flex-shrink:0}
+.cons-tags{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.cons-tag{background:var(--lsage);color:var(--g);font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px}
+.cons-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:14px}
+.smb-banner{background:var(--g);border-radius:var(--radiuslg);padding:32px 36px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;margin-top:32px}
+
+/* ─── BOOKING WIZARD ─── */
+.wizard-steps{display:flex;gap:0;margin-bottom:28px}
+.w-step{flex:1;text-align:center;font-size:12px;font-weight:600;padding:8px;border-bottom:2px solid var(--border);color:var(--muted)}
+.w-step.active{border-color:var(--g);color:var(--g)}
+.w-step.done{border-color:var(--sage);color:var(--sage)}
+.time-slots{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.slot{padding:8px 16px;border-radius:100px;border:1.5px solid var(--border);background:#fff;font-size:13px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
+.slot:hover{border-color:var(--sage)}
+.slot.sel{background:var(--lsage);border-color:var(--g);color:var(--g);font-weight:600}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text)}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);outline:none;transition:border-color .15s;background:#fff}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--sage)}
+.summary-row{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;color:var(--muted)}
+.summary-row strong{color:var(--text)}
+.summary-total{border-top:1px solid var(--border);margin-top:4px;padding-top:8px;display:flex;justify-content:space-between;font-weight:700}
+
+/* ─── PLANS ─── */
+#plans{background:var(--warm)}
+.plan-card{border-radius:var(--radiuslg);padding:28px;border:2px solid transparent;transition:all .25s}
+.plan-card.pop{border-color:var(--msage)}
+.plan-price{display:flex;align-items:baseline;gap:4px;margin:14px 0 20px}
+.plan-price .amt{font-size:38px;font-weight:700;font-family:'Fraunces',serif}
+.plan-price .period{font-size:14px;opacity:.65}
+.plan-feature{display:flex;gap:8px;font-size:13px;line-height:1.45;padding:5px 0}
+.plan-feature::before{content:'✓';flex-shrink:0;font-weight:700}
+.plan-popular-badge{text-align:center;margin-bottom:12px}
+
+/* ─── FARMERS ─── */
+#farmers{background:var(--g3)}
+.farmer-card{background:rgba(255,255,255,.07);border-radius:var(--radiuslg);padding:20px;border:1px solid rgba(255,255,255,.1);display:flex;gap:16px;align-items:center;transition:all .2s}
+.farmer-card:hover{background:rgba(255,255,255,.11);transform:translateX(4px)}
+
+/* ─── TESTIMONIALS ─── */
+#testimonials{background:var(--cream)}
+.testi-card{background:#fff;border-radius:var(--radiuslg);padding:24px;border:1px solid var(--border)}
+.testi-stars{color:var(--gold);font-size:14px;margin-bottom:10px}
+.testi-text{font-size:14px;line-height:1.7;color:var(--text);margin-bottom:16px;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:10px}
+.testi-avatar{width:38px;height:38px;border-radius:50%;background:var(--lsage);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--g)}
+.testi-name{font-size:13px;font-weight:700}
+.testi-loc{font-size:11px;color:var(--muted)}
+
+/* ─── FAQ ─── */
+#faq{background:var(--warm)}
+.faq-item{border-bottom:1px solid var(--border);padding:18px 0}
+.faq-q{display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-weight:600;font-size:15px;gap:12px}
+.faq-icon{font-size:18px;color:var(--g);transition:transform .25s;flex-shrink:0}
+.faq-a{font-size:14px;color:var(--muted);line-height:1.7;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease}
+.faq-a.open{max-height:200px;padding-top:10px}
+.faq-icon.open{transform:rotate(45deg)}
+
+/* ─── NEWSLETTER ─── */
+#newsletter{background:linear-gradient(135deg,var(--terra) 0%,#d4732d 100%);padding:64px 0}
+.nl-inner{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.nl-form{display:flex;gap:10px}
+.nl-form input{flex:1;padding:12px 18px;border-radius:100px;border:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;outline:none}
+
+/* ─── FOOTER ─── */
+footer{background:#0a2418;padding:56px 0 28px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:36px;margin-bottom:40px}
+.footer-brand{font-size:22px;color:var(--msage);margin-bottom:12px;font-family:'Fraunces',serif}
+.footer-desc{color:rgba(255,255,255,.45);font-size:13px;line-height:1.7;max-width:220px}
+.footer-col-title{color:#fff;font-weight:700;font-size:14px;margin-bottom:14px}
+.footer-link{color:rgba(255,255,255,.4);font-size:13px;margin-bottom:8px;cursor:pointer;display:block;transition:color .15s;text-decoration:none}
+.footer-link:hover{color:var(--msage)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:20px;display:flex;justify-content:space-between;color:rgba(255,255,255,.25);font-size:12px}
+.social-pill{background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);padding:5px 12px;border-radius:100px;font-size:12px;cursor:pointer;transition:all .15s;display:inline-block;margin-right:6px;margin-top:12px}
+.social-pill:hover{background:rgba(255,255,255,.15)}
+
+/* ─── CART DRAWER ─── */
+#cart-drawer{position:fixed;right:-420px;top:0;bottom:0;width:400px;background:#fff;box-shadow:-4px 0 40px rgba(0,0,0,.1);z-index:500;transition:right .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;border-left:1px solid var(--border)}
+#cart-drawer.open{right:0}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;padding:22px 24px;border-bottom:1px solid var(--border)}
+.drawer-body{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:14px}
+.drawer-foot{padding:20px 24px;border-top:1px solid var(--border)}
+.cart-item{display:flex;gap:12px;background:var(--cream);border-radius:12px;padding:12px}
+.cart-emoji{width:50px;height:50px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.cart-item-name{font-size:13px;font-weight:600;line-height:1.3}
+.cart-item-price{font-size:14px;font-weight:700;color:var(--terra)}
+.qty-ctrl{display:flex;align-items:center;gap:8px;margin-top:4px}
+.qty-btn{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
+.qty-btn:hover{background:var(--lsage);border-color:var(--sage)}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:490;opacity:0;pointer-events:none;transition:opacity .3s}
+.overlay.on{opacity:1;pointer-events:all}
+
+/* ─── MODAL ─── */
+.modal-wrap{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-wrap.on{opacity:1;pointer-events:all}
+.modal-box{background:#fff;border-radius:24px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;padding:32px;transform:scale(.96);transition:transform .25s}
+.modal-wrap.on .modal-box{transform:scale(1)}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1}
+
+/* ─── ADMIN ─── */
+#admin-view{display:none;min-height:100vh;background:#f4f6f9}
+.admin-layout{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+.admin-side{background:var(--g3);padding:0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.admin-logo{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.08);font-size:18px;color:var(--msage);font-family:'Fraunces',serif;font-weight:700}
+.admin-logo span{font-size:11px;display:block;color:rgba(255,255,255,.35);font-family:'Plus Jakarta Sans',sans-serif;font-weight:400;margin-top:2px}
+.admin-nav{padding:16px 12px;flex:1}
+.admin-section-label{font-size:10px;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.3);padding:12px 10px 6px;text-transform:uppercase}
+.a-nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:500;color:rgba(255,255,255,.6);transition:all .15s;margin-bottom:2px;font-family:'Plus Jakarta Sans',sans-serif}
+.a-nav-item:hover{background:rgba(255,255,255,.08);color:#fff}
+.a-nav-item.active{background:rgba(168,217,122,.15);color:var(--msage)}
+.a-nav-icon{font-size:17px}
+.admin-main{padding:28px 32px;overflow-y:auto}
+.admin-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
+.admin-title{font-size:24px;font-weight:700;color:var(--g)}
+.admin-panel{display:none}
+.admin-panel.active{display:block}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:28px}
+.kpi{background:#fff;border-radius:var(--radius);padding:20px;border:1px solid var(--border)}
+.kpi-label{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:6px}
+.kpi-val{font-size:28px;font-weight:700;font-family:'Fraunces',serif;color:var(--g)}
+.kpi-change{font-size:12px;margin-top:4px}
+.kpi-up{color:#27500A}.kpi-down{color:var(--terra2)}
+.table-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);overflow:hidden}
+.table-card-head{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid var(--border)}
+.table-card-title{font-size:16px;font-weight:700}
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:10px 22px;text-align:left;background:#fafafa;border-bottom:1px solid var(--border)}
+.data-table td{padding:13px 22px;font-size:13px;border-bottom:1px solid var(--border)}
+.data-table tr:last-child td{border:none}
+.data-table tr:hover td{background:#fafcfa}
+.status{display:inline-block;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700}
+.s-pending{background:#FAEEDA;color:#854F0B}
+.s-confirmed{background:#EAF3DE;color:#27500A}
+.s-delivered{background:#E6F1FB;color:#185FA5}
+.s-cancelled{background:#FCEBEB;color:#A32D2D}
+.chart-wrap{background:#fff;border-radius:var(--radius);border:1px solid var(--border);padding:22px;margin-bottom:22px}
+.chart-title{font-size:16px;font-weight:700;margin-bottom:16px}
+.chart-area{height:220px;position:relative}
+.admin-form{background:#fff;border-radius:var(--radius);border:1px solid var(--border);padding:24px}
+.admin-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.admin-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:22px}
+.inv-badge{display:inline-block;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:700}
+.inv-ok{background:#EAF3DE;color:#27500A}.inv-low{background:#FAEEDA;color:#854F0B}.inv-out{background:#FCEBEB;color:#A32D2D}
+.action-btn{background:none;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;transition:all .15s}
+.action-btn:hover{background:var(--lsage);border-color:var(--sage)}
+.action-del:hover{background:#FCEBEB;border-color:#F09595;color:#A32D2D}
+.tab-row{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:22px}
+.tab-item{padding:10px 18px;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.tab-item.active{color:var(--g);border-bottom-color:var(--g)}
+.booking-card{background:#fff;border-radius:12px;border:1px solid var(--border);padding:16px 18px;display:grid;grid-template-columns:auto 1fr auto auto;gap:16px;align-items:center}
+.notif{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:12px;border:1px solid var(--border);background:#fff;margin-bottom:10px}
+.notif-icon{font-size:20px;flex-shrink:0}
+.notif-text{font-size:13px;line-height:1.5}
+.notif-time{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .45s ease forwards}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading::after{content:'';display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;margin-left:8px}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:768px){
+  .hero-grid,.grid-2,.grid-3,.nl-inner,.footer-grid{grid-template-columns:1fr}
+  .hero-title{font-size:36px}
+  .how-steps{grid-template-columns:1fr 1fr}
+  .how-step::after{display:none}
+  .admin-layout{grid-template-columns:1fr}
+  .admin-side{height:auto;position:relative}
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .pdm-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     WEBSITE VIEW
+═══════════════════════════════════════════════ -->
+<div id="site-view">
+
+<!-- NAV -->
+<nav id="site-nav">
+  <div class="container nav-inner">
+    <a class="logo" onclick="scrollToSec('hero')">🌿 fruitree</a>
+    <div class="nav-links">
+      <button class="nav-link active" onclick="navGo(this,'shop-sec')">Shop</button>
+      <button class="nav-link" onclick="navGo(this,'consultants')">Consultants</button>
+      <button class="nav-link" onclick="navGo(this,'plans')">Care Plans</button>
+      <button class="nav-link" onclick="navGo(this,'farmers')">Our Farmers</button>
+      <button class="nav-link" onclick="navGo(this,'testimonials')">Reviews</button>
+    </div>
+    <div class="search-bar">
+      <span>🔍</span>
+      <input type="text" id="search-input" placeholder="Saplings, herbs, tools…" oninput="filterProducts()" />
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-shrink:0">
+      <button class="btn btn-outline btn-sm" onclick="toggleAdmin()">⚙ Admin</button>
+      <button class="btn btn-primary btn-sm cart-btn" onclick="toggleCart()">
+        🛒 Cart <span class="cart-count" id="cart-count" style="display:none">0</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- CATEGORY PILLS -->
+<div class="pill-bar">
+  <div class="container">
+    <div class="pill-scroll" id="pill-bar">
+      <button class="pill active" onclick="setCat(this,'all')">🌿 All</button>
+      <button class="pill" onclick="setCat(this,'saplings')">🌱 Saplings</button>
+      <button class="pill" onclick="setCat(this,'fruit')">🍋 Fruit Trees</button>
+      <button class="pill" onclick="setCat(this,'herbs')">🌿 Herbs & Greens</button>
+      <button class="pill" onclick="setCat(this,'kits')">🪴 Grow Kits</button>
+      <button class="pill" onclick="setCat(this,'soil')">🌍 Soil & Compost</button>
+      <button class="pill" onclick="setCat(this,'tools')">🛠 Tools</button>
+      <button class="pill" onclick="setCat(this,'flowering')">🌸 Flowering</button>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="fade-up">
+        <span class="tag" style="background:rgba(255,255,255,.15);color:var(--msage);margin-bottom:18px;display:inline-block">🌾 Sourced directly from Auroville Farms</span>
+        <h1 class="hero-title">Grow your<br><em>own garden</em><br>on any terrace.</h1>
+        <p class="hero-desc">From handpicked saplings to on-demand garden consultants — everything for a thriving terrace garden, delivered to your doorstep.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <button class="btn btn-sage" style="padding:13px 28px;font-size:15px" onclick="scrollToSec('shop-sec')">Shop Plants 🌿</button>
+          <button class="btn btn-ghost" style="padding:13px 28px;font-size:15px" onclick="scrollToSec('consultants')">Book a Consultant</button>
+        </div>
+        <div class="hero-stats">
+          <div><div class="stat-val">1,200+</div><div class="stat-label">Plants Delivered</div></div>
+          <div><div class="stat-val">50+</div><div class="stat-label">Expert Advisors</div></div>
+          <div><div class="stat-val">4.9★</div><div class="stat-label">Customer Rating</div></div>
+          <div><div class="stat-val">6 cities</div><div class="stat-label">Pan South India</div></div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-tag-grid">
+          <span class="hero-tag">🥭 Mango</span><span class="hero-tag">🍋 Lemon</span><span class="hero-tag">🌹 Rose</span><span class="hero-tag">🌿 Tulsi</span>
+          <span class="hero-tag">🍅 Tomato</span><span class="hero-tag">🌸 Jasmine</span><span class="hero-tag">🥦 Broccoli</span><span class="hero-tag">🪴 Ferns</span>
+          <span class="hero-tag">🍃 Mint</span><span class="hero-tag">🌶 Chilli</span>
+        </div>
+        <div class="delivery-card">
+          <div style="color:rgba(255,255,255,.5);font-size:12px;margin-bottom:6px">📍 Delivering to</div>
+          <div style="color:#fff;font-weight:700;font-size:16px">Chennai, Tamil Nadu</div>
+          <div style="color:rgba(255,255,255,.45);font-size:13px;margin-top:4px">Same-day for select pin codes · Auroville pickup available</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div style="background:rgba(255,255,255,.08);border-radius:12px;padding:14px;border:1px solid rgba(255,255,255,.1)">
+            <div style="font-size:20px;margin-bottom:6px">🚚</div>
+            <div style="color:#fff;font-size:13px;font-weight:600">Free delivery</div>
+            <div style="color:rgba(255,255,255,.4);font-size:12px">on orders ₹499+</div>
+          </div>
+          <div style="background:rgba(255,255,255,.08);border-radius:12px;padding:14px;border:1px solid rgba(255,255,255,.1)">
+            <div style="font-size:20px;margin-bottom:6px">🌱</div>
+            <div style="color:#fff;font-size:13px;font-weight:600">Live guarantee</div>
+            <div style="color:rgba(255,255,255,.4);font-size:12px">7-day plant warranty</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how" style="background:var(--cream)">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:8px">
+      <span class="tag badge-new">How it works</span>
+    </div>
+    <h2 style="text-align:center;font-size:34px;color:var(--g);margin-bottom:6px">From farm to your terrace</h2>
+    <p style="text-align:center;color:var(--muted);max-width:480px;margin:0 auto">Ordering from Fruitree is as easy as ordering food online.</p>
+    <div class="how-steps">
+      <div class="how-step" data-arrow="→">
+        <div class="step-num">01</div>
+        <div class="step-icon">🛒</div>
+        <div class="step-title">Browse & Order</div>
+        <div class="step-desc">Pick saplings, kits, or products. Add to cart and checkout in under 2 minutes.</div>
+      </div>
+      <div class="how-step" data-arrow="→">
+        <div class="step-num">02</div>
+        <div class="step-icon">🌾</div>
+        <div class="step-title">Farm Picks Fresh</div>
+        <div class="step-desc">Your order is picked from our Auroville partner farms the same day — no warehouse stock.</div>
+      </div>
+      <div class="how-step" data-arrow="→">
+        <div class="step-num">03</div>
+        <div class="step-icon">🚚</div>
+        <div class="step-title">Express Delivery</div>
+        <div class="step-desc">Eco-packaged and delivered to your door. Track your order live on WhatsApp.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">04</div>
+        <div class="step-icon">📞</div>
+        <div class="step-title">Ongoing Support</div>
+        <div class="step-desc">Book a consultant, join a care plan, or chat with our plant helpline anytime.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOP -->
+<section class="section" id="shop-sec" style="background:var(--warm)">
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px">
+      <div>
+        <h2 style="font-size:34px;color:var(--g)">Shop Plants & Products</h2>
+        <p style="color:var(--muted);margin-top:6px">Directly from Auroville organic farms — no chemicals, no middlemen</p>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <span id="product-count" style="color:var(--muted);font-size:14px">12 items</span>
+        <select onchange="sortProducts(this.value)" style="padding:8px 14px;border:1.5px solid var(--border);border-radius:100px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;background:#fff;color:var(--text);cursor:pointer">
+          <option value="default">Sort: Default</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+          <option value="rating">Top Rated</option>
+          <option value="bestseller">Bestsellers</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid-4" id="product-grid"></div>
+    <div id="empty-state" style="display:none;text-align:center;padding:60px 0;color:var(--muted)">
+      <div style="font-size:48px;margin-bottom:12px">🌱</div>
+      <div style="font-size:16px;font-weight:600">No plants found</div>
+      <div style="font-size:14px;margin-top:4px">Try a different category or search term</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONSULTANTS -->
+<section class="section" id="consultants" style="background:var(--cream)">
+  <div class="container">
+    <div style="margin-bottom:32px">
+      <h2 style="font-size:34px;color:var(--g)">Book a Garden Consultant</h2>
+      <p style="color:var(--muted);margin-top:6px;max-width:560px">Expert advisors for in-person visits, video calls, and ongoing garden care. Backed by 10+ years of terrace farming experience.</p>
+    </div>
+    <div class="grid-3" id="consultant-grid"></div>
+    <div class="smb-banner">
+      <div>
+        <h3 style="color:#fff;font-size:22px;margin-bottom:8px">Need a complete terrace garden setup?</h3>
+        <p style="color:rgba(255,255,255,.6);font-size:14px;max-width:500px">Our SMB services include design consultation, full garden implementation, plant selection, irrigation setup, and monthly maintenance — for homes and corporate offices.</p>
+      </div>
+      <button class="btn btn-sage" style="padding:13px 26px;white-space:nowrap" onclick="openEnquiry()">Get a Free Quote →</button>
+    </div>
+  </div>
+</section>
+
+<!-- CARE PLANS -->
+<section class="section" id="plans">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:40px">
+      <h2 style="font-size:34px;color:var(--g);margin-bottom:10px">Monthly Care Plans</h2>
+      <p style="color:var(--muted);max-width:460px;margin:0 auto">Subscribe and let Fruitree take care of your garden — plant delivery, expert check-ins, and seasonal guidance every month.</p>
+    </div>
+    <div class="grid-3" id="plan-grid"></div>
+  </div>
+</section>
+
+<!-- FARMERS -->
+<section class="section" id="farmers" style="background:var(--g3)">
+  <div class="container">
+    <div class="grid-2" style="align-items:center">
+      <div>
+        <span class="tag" style="background:rgba(168,217,122,.2);color:var(--msage);margin-bottom:16px;display:inline-block">🌾 Farm Network</span>
+        <h2 style="font-size:36px;color:#fff;line-height:1.15;margin-bottom:16px">Directly from <em style="color:var(--msage);font-style:italic">Auroville's soil</em><br>to your terrace.</h2>
+        <p style="color:rgba(255,255,255,.6);font-size:15px;line-height:1.75;margin-bottom:24px">Every plant is sourced from verified natural farms — no chemical fertilisers, no warehouses. We work directly with farmers across Tamil Nadu and Puducherry.</p>
+        <div style="display:flex;gap:28px">
+          <div><div class="stat-val" style="font-size:18px">12</div><div style="color:rgba(255,255,255,.4);font-size:12px">Partner Farms</div></div>
+          <div><div class="stat-val" style="font-size:18px">100%</div><div style="color:rgba(255,255,255,.4);font-size:12px">Chemical Free</div></div>
+          <div><div class="stat-val" style="font-size:18px">Direct</div><div style="color:rgba(255,255,255,.4);font-size:12px">Farm to Door</div></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px" id="farmer-list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section" id="testimonials" style="background:var(--cream)">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:36px">
+      <h2 style="font-size:34px;color:var(--g);margin-bottom:8px">What our growers say</h2>
+      <p style="color:var(--muted)">Over 1,200 happy terrace gardeners across Chennai, Coimbatore & Bengaluru</p>
+    </div>
+    <div class="grid-3" id="testi-grid"></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="container" style="max-width:760px">
+    <h2 style="font-size:34px;color:var(--g);margin-bottom:32px;text-align:center">Frequently asked</h2>
+    <div id="faq-list"></div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section id="newsletter">
+  <div class="container">
+    <div class="nl-inner">
+      <div>
+        <h2 style="color:#fff;font-size:30px;margin-bottom:10px">Get seasonal planting tips 🌱</h2>
+        <p style="color:rgba(255,255,255,.7);font-size:15px;line-height:1.6">Monthly plant care guides, new arrivals, Auroville harvest stories, and exclusive subscriber discounts — straight to your inbox.</p>
+      </div>
+      <div>
+        <div class="nl-form">
+          <input type="email" placeholder="your@email.com" id="nl-email" style="border-radius:100px;border:none;padding:12px 18px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;flex:1" />
+          <button class="btn btn-primary" onclick="nlSubscribe()" style="white-space:nowrap;border-radius:100px">Subscribe →</button>
+        </div>
+        <p style="color:rgba(255,255,255,.4);font-size:12px;margin-top:8px">No spam. Unsubscribe anytime. 3,400+ readers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">🌿 fruitree</div>
+        <p class="footer-desc">Bringing Auroville's organic farming wisdom to Chennai's terraces. Grow green, live green.</p>
+        <div style="margin-top:14px">
+          <span class="social-pill">📱 Instagram</span>
+          <span class="social-pill">💬 WhatsApp</span>
+          <span class="social-pill">🐦 Twitter</span>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Shop</div>
+        <a class="footer-link">Saplings</a><a class="footer-link">Fruit Trees</a>
+        <a class="footer-link">Herbs & Greens</a><a class="footer-link">Grow Kits</a><a class="footer-link">Soil & Tools</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Services</div>
+        <a class="footer-link">Book Consultant</a><a class="footer-link">Garden Setup</a>
+        <a class="footer-link">Care Plans</a><a class="footer-link">Corporate Gardens</a><a class="footer-link">Bulk Orders</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <a class="footer-link">About Us</a><a class="footer-link">Our Farms</a>
+        <a class="footer-link">Blog</a><a class="footer-link">Careers</a><a class="footer-link">Contact</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Fruitree. Made with 🌿 in Chennai.</span>
+      <span>Payments: UPI · Razorpay · PhonePe · Cards · Net Banking</span>
+    </div>
+  </div>
+</footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     ADMIN VIEW
+═══════════════════════════════════════════════ -->
+<div id="admin-view">
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-side">
+      <div class="admin-logo">🌿 fruitree <span>Admin Dashboard</span></div>
+      <nav class="admin-nav">
+        <div class="admin-section-label">Overview</div>
+        <div class="a-nav-item active" onclick="aNav(this,'a-overview')"><span class="a-nav-icon">📊</span> Dashboard</div>
+        <div class="a-nav-item" onclick="aNav(this,'a-analytics')"><span class="a-nav-icon">📈</span> Analytics</div>
+        <div class="admin-section-label">Orders</div>
+        <div class="a-nav-item" onclick="aNav(this,'a-orders')"><span class="a-nav-icon">📦</span> All Orders</div>
+        <div class="a-nav-item" onclick="aNav(this,'a-bookings')"><span class="a-nav-icon">📅</span> Consultations</div>
+        <div class="admin-section-label">Catalogue</div>
+        <div class="a-nav-item" onclick="aNav(this,'a-products')"><span class="a-nav-icon">🌱</span> Products</div>
+        <div class="a-nav-item" onclick="aNav(this,'a-consultants')"><span class="a-nav-icon">👨‍🌾</span> Consultants</div>
+        <div class="a-nav-item" onclick="aNav(this,'a-plans')"><span class="a-nav-icon">⭐</span> Care Plans</div>
+        <div class="admin-section-label">Business</div>
+        <div class="a-nav-item" onclick="aNav(this,'a-customers')"><span class="a-nav-icon">👥</span> Customers</div>
+        <div class="a-nav-item" onclick="aNav(this,'a-inventory')"><span class="a-nav-icon">🏭</span> Inventory</div>
+        <div class="a-nav-item" onclick="aNav(this,'a-notifs')"><span class="a-nav-icon">🔔</span> Notifications</div>
+      </nav>
+      <div style="padding:16px 20px;border-top:1px solid rgba(255,255,255,.08)">
+        <button class="btn btn-outline btn-sm" style="width:100%;justify-content:center;color:var(--msage);border-color:var(--msage)" onclick="toggleAdmin()">← Back to Website</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="admin-main">
+
+      <!-- OVERVIEW -->
+      <div id="a-overview" class="admin-panel active">
+        <div class="admin-top">
+          <div class="admin-title">Good morning, Admin 👋</div>
+          <div style="display:flex;gap:10px">
+            <select style="padding:8px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px">
+              <option>Last 30 days</option><option>Last 7 days</option><option>This month</option>
+            </select>
+            <button class="btn btn-primary btn-sm">Export Report</button>
+          </div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi"><div class="kpi-label">Total Revenue</div><div class="kpi-val">₹2,84,320</div><div class="kpi-change kpi-up">▲ 18.4% vs last month</div></div>
+          <div class="kpi"><div class="kpi-label">Orders Placed</div><div class="kpi-val">347</div><div class="kpi-change kpi-up">▲ 12.1%</div></div>
+          <div class="kpi"><div class="kpi-label">Consultations</div><div class="kpi-val">89</div><div class="kpi-change kpi-up">▲ 23.5%</div></div>
+          <div class="kpi"><div class="kpi-label">Active Subscribers</div><div class="kpi-val">142</div><div class="kpi-change kpi-up">▲ 9.3%</div></div>
+        </div>
+        <div class="admin-row">
+          <div class="chart-wrap" style="grid-column:1/-1">
+            <div class="chart-title">Revenue — Last 6 Months</div>
+            <div class="chart-area"><canvas id="rev-chart"></canvas></div>
+          </div>
+        </div>
+        <div class="admin-row">
+          <div class="chart-wrap">
+            <div class="chart-title">Orders by Category</div>
+            <div class="chart-area" style="height:200px"><canvas id="cat-chart"></canvas></div>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-title">Consultation Bookings</div>
+            <div class="chart-area" style="height:200px"><canvas id="book-chart"></canvas></div>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-card-head">
+            <div class="table-card-title">Recent Orders</div>
+            <button class="btn btn-outline btn-sm" onclick="aNav(document.querySelector('.a-nav-item:nth-child(5)'),'a-orders')">View All</button>
+          </div>
+          <table class="data-table" id="overview-orders"></table>
+        </div>
+      </div>
+
+      <!-- ANALYTICS -->
+      <div id="a-analytics" class="admin-panel">
+        <div class="admin-top"><div class="admin-title">Analytics & Insights</div></div>
+        <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="kpi"><div class="kpi-label">Avg Order Value</div><div class="kpi-val">₹819</div><div class="kpi-change kpi-up">▲ 6.2%</div></div>
+          <div class="kpi"><div class="kpi-label">Conversion Rate</div><div class="kpi-val">3.8%</div><div class="kpi-change kpi-down">▼ 0.4%</div></div>
+          <div class="kpi"><div class="kpi-label">Returning Customers</div><div class="kpi-val">68%</div><div class="kpi-change kpi-up">▲ 4.1%</div></div>
+        </div>
+        <div class="admin-row">
+          <div class="chart-wrap" style="grid-column:1/-1">
+            <div class="chart-title">Weekly Visitors & Orders</div>
+            <div class="chart-area"><canvas id="visitor-chart"></canvas></div>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-card-head"><div class="table-card-title">Top Selling Products</div></div>
+          <table class="data-table" id="top-products-table"></table>
+        </div>
+      </div>
+
+      <!-- ORDERS -->
+      <div id="a-orders" class="admin-panel">
+        <div class="admin-top">
+          <div class="admin-title">All Orders</div>
+          <div style="display:flex;gap:10px">
+            <input type="text" placeholder="Search order / customer…" style="padding:8px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif" />
+            <select style="padding:8px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif">
+              <option>All Status</option><option>Pending</option><option>Confirmed</option><option>Delivered</option><option>Cancelled</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-card">
+          <table class="data-table" id="orders-table"></table>
+        </div>
+      </div>
+
+      <!-- BOOKINGS -->
+      <div id="a-bookings" class="admin-panel">
+        <div class="admin-top"><div class="admin-title">Consultation Bookings</div><button class="btn btn-primary btn-sm">+ New Booking</button></div>
+        <div class="tab-row">
+          <div class="tab-item active" onclick="switchTab(this,'upcoming-bk')">Upcoming (12)</div>
+          <div class="tab-item" onclick="switchTab(this,'past-bk')">Completed (77)</div>
+          <div class="tab-item" onclick="switchTab(this,'cancel-bk')">Cancelled (4)</div>
+        </div>
+        <div id="upcoming-bk" style="display:flex;flex-direction:column;gap:12px" id="booking-list"></div>
+        <div id="past-bk" style="display:none"><p style="color:var(--muted);padding:20px 0">Completed bookings will appear here.</p></div>
+        <div id="cancel-bk" style="display:none"><p style="color:var(--muted);padding:20px 0">Cancelled bookings will appear here.</p></div>
+      </div>
+
+      <!-- PRODUCTS -->
+      <div id="a-products" class="admin-panel">
+        <div class="admin-top"><div class="admin-title">Product Catalogue</div><button class="btn btn-primary btn-sm" onclick="openAddProduct()">+ Add Product</button></div>
+        <div class="table-card">
+          <div class="table-card-head">
+            <div class="table-card-title">All Products (12)</div>
+            <input type="text" placeholder="Search products…" style="padding:7px 14px;border:1.5px solid var(--border);border-radius:100px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif" />
+          </div>
+          <table class="data-table" id="admin-products-table"></table>
+        </div>
+        <!-- Add Product Form -->
+        <div id="add-product-form" style="display:none;margin-top:24px">
+          <div class="admin-form">
+            <div style="font-size:16px;font-weight:700;margin-bottom:20px;color:var(--g)">Add New Product</div>
+            <div class="admin-form-grid">
+              <div class="form-group"><label>Product Name</label><input type="text" placeholder="e.g. Dwarf Mango Sapling" /></div>
+              <div class="form-group"><label>Category</label>
+                <select><option>Saplings</option><option>Fruit Trees</option><option>Herbs</option><option>Grow Kits</option><option>Soil</option><option>Tools</option></select>
+              </div>
+              <div class="form-group"><label>Price (₹)</label><input type="number" placeholder="349" /></div>
+              <div class="form-group"><label>Original Price (₹)</label><input type="number" placeholder="499" /></div>
+              <div class="form-group"><label>Farm Source / Tag</label><input type="text" placeholder="Auroville Farm" /></div>
+              <div class="form-group"><label>Stock Quantity</label><input type="number" placeholder="50" /></div>
+              <div class="form-group"><label>Emoji</label><input type="text" placeholder="🥭" /></div>
+              <div class="form-group"><label>Badge</label><select><option value="">None</option><option>new</option><option>hot</option><option>sale</option></select></div>
+            </div>
+            <div class="form-group"><label>Description</label><textarea rows="3" placeholder="Brief description of the plant, ideal conditions, etc."></textarea></div>
+            <div style="display:flex;gap:10px;margin-top:8px">
+              <button class="btn btn-primary">Save Product</button>
+              <button class="btn btn-outline" onclick="document.getElementById('add-product-form').style.display='none'">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONSULTANTS ADMIN -->
+      <div id="a-consultants" class="admin-panel">
+        <div class="admin-top"><div class="admin-title">Consultants</div><button class="btn btn-primary btn-sm">+ Add Consultant</button></div>
+        <div class="table-card">
+          <table class="data-table" id="admin-cons-table"></table>
+        </div>
+      </div>
+
+      <!-- PLANS ADMIN -->
+      <div id="a-plans" class="admin-panel">
+        <div class="admin-top"><div class="admin-title">Care Plans Management</div></div>
+        <div class="grid-3" style="margin-bottom:24px">
+          <div class="kpi"><div class="kpi-label">Seedling Subscribers</div><div class="kpi-val">64</div><div class="kpi-change kpi-up">▲ 8</div></div>
+          <div class="kpi"><div class="kpi-label">Garden Pro Subscribers</div><div class="kpi-val">58</div><div class="kpi-change kpi-up">▲ 14</div></div>
+          <div class="kpi"><div class="kpi-label">Terrace Master</div><div class="kpi-val">20</div><div class="kpi-change kpi-up">▲ 3</div></div>
+        </div>
+        <div class="table-card">
+          <div class="table-card-head"><div class="table-card-title">Active Subscriptions</div></div>
+          <table class="data-table" id="subs-table"></table>
+        </div>
+      </div>
+
+      <!-- CUSTOMERS -->
+      <div id="a-customers" class="admin-panel">
+        <div class="admin-top"><div class="admin-title">Customers</div>
+          <input type="text" placeholder="Search by name or email…" style="padding:8px 14px;border:1.5px solid var(--border);border-radius:100px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;width:260px" />
+        </div>
+        <div class="table-card">
+          <table class="data-table" id="customers-table"></table>
+        </div>
+      </div>
+
+      <!-- INVENTORY -->
+      <div id="a-inventory" class="admin-panel">
+        <div class="admin-top"><div class="admin-title">Inventory Management</div>
+          <button class="btn btn-primary btn-sm">Sync with Farms</button>
+        </div>
+        <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="kpi"><div class="kpi-label">Total SKUs</div><div class="kpi-val">12</div></div>
+          <div class="kpi"><div class="kpi-label">Low Stock Items</div><div class="kpi-val" style="color:var(--terra)">3</div></div>
+          <div class="kpi"><div class="kpi-label">Out of Stock</div><div class="kpi-val" style="color:#A32D2D">1</div></div>
+        </div>
+        <div class="table-card" style="margin-top:22px">
+          <table class="data-table" id="inventory-table"></table>
+        </div>
+      </div>
+
+      <!-- NOTIFICATIONS -->
+      <div id="a-notifs" class="admin-panel">
+        <div class="admin-top"><div class="admin-title">Notifications & Alerts</div><button class="btn btn-outline btn-sm">Mark all read</button></div>
+        <div id="notif-list"></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ═══ CART DRAWER ═══ -->
+<div class="overlay" id="overlay" onclick="closeAll()"></div>
+<div id="cart-drawer">
+  <div class="drawer-head">
+    <h3 class="fraunces" style="font-size:20px;color:var(--g)">Your Cart 🛒</h3>
+    <button class="modal-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="drawer-body" id="cart-body"></div>
+  <div class="drawer-foot" id="cart-foot"></div>
+</div>
+
+<!-- ═══ BOOKING MODAL ═══ -->
+<div class="modal-wrap" id="booking-modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 class="fraunces" style="font-size:22px;color:var(--g)">Book a Session</h3>
+      <button class="modal-close" onclick="closeModal('booking-modal')">✕</button>
+    </div>
+    <div id="booking-content"></div>
+  </div>
+</div>
+
+<!-- ═══ PRODUCT DETAIL MODAL ═══ -->
+<div class="modal-wrap" id="product-modal">
+  <div class="modal-box" style="max-width:680px">
+    <div class="modal-head">
+      <h3 class="fraunces" style="font-size:22px;color:var(--g)" id="pdm-title">Product</h3>
+      <button class="modal-close" onclick="closeModal('product-modal')">✕</button>
+    </div>
+    <div id="product-detail-content"></div>
+  </div>
+</div>
+
+<!-- ═══ ENQUIRY MODAL ═══ -->
+<div class="modal-wrap" id="enquiry-modal">
+  <div class="modal-box" style="max-width:480px">
+    <div class="modal-head">
+      <h3 class="fraunces" style="font-size:22px;color:var(--g)">Garden Setup Enquiry</h3>
+      <button class="modal-close" onclick="closeModal('enquiry-modal')">✕</button>
+    </div>
+    <div class="form-group"><label>Your Name</label><input type="text" placeholder="Full name" /></div>
+    <div class="form-group"><label>Phone / WhatsApp</label><input type="text" placeholder="+91 99999 00000" /></div>
+    <div class="form-group"><label>Email</label><input type="email" placeholder="email@example.com" /></div>
+    <div class="form-group"><label>Property Type</label>
+      <select><option>Residential Terrace</option><option>Villa Garden</option><option>Office / Corporate</option><option>Apartment Balcony</option></select>
+    </div>
+    <div class="form-group"><label>Approximate Area (sq ft)</label><input type="text" placeholder="e.g. 300 sq ft" /></div>
+    <div class="form-group"><label>Additional Notes</label><textarea rows="3" placeholder="Tell us about your vision…"></textarea></div>
+    <button class="btn btn-primary btn-block" onclick="submitEnquiry()">Submit Enquiry →</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════
+const PRODUCTS = [
+  {id:1,name:"Dwarf Mango Sapling",cat:"fruit",price:349,orig:499,badge:"sale",rating:4.8,reviews:142,emoji:"🥭",tag:"Auroville Farm",desc:"Compact grafted variety, ideal for pots 18\" and above. Bears fruit in 2–3 years. Includes 1kg organic booster.",best:true,water:"Daily",sun:"Full Sun",size:"2–4 ft",care:"Easy",harvest:"Year 2–3",pot:"18 inch+"},
+  {id:2,name:"Cherry Tomato Sapling (Pack of 6)",cat:"saplings",price:199,orig:null,badge:"hot",rating:4.9,reviews:310,emoji:"🍅",tag:"Natural Farm",desc:"High-yield indeterminate variety. Produces clusters of sweet cherry tomatoes. Ready in 60 days.",best:true,water:"Alternate days",sun:"Full Sun",size:"3–5 ft",care:"Moderate",harvest:"60 days",pot:"12 inch+"},
+  {id:3,name:"Tulsi + Mint Herb Starter Kit",cat:"herbs",price:449,orig:null,badge:"new",rating:4.7,reviews:89,emoji:"🌿",tag:"Organic",desc:"6 medicinal herbs in biodegradable pots — Tulsi, Pudina, Curry Leaf, Lemon Grass, Coriander, Ajwain — with organic soil.",best:false,water:"Daily",sun:"Partial Sun",size:"6–12 inch",care:"Easy",harvest:"30 days",pot:"6–8 inch"},
+  {id:4,name:"Terrace Grow Kit — Beginner",cat:"kits",price:1299,orig:1699,badge:"sale",rating:4.9,reviews:204,emoji:"🪴",tag:"Bundle",desc:"Complete starter kit: 5 fabric pots, cocopeat mix, 10 seed varieties, liquid fertiliser, instruction booklet.",best:true,water:"Daily",sun:"Any",size:"Kit",care:"Beginner",harvest:"Varies",pot:"Included"},
+  {id:5,name:"Jasmine Creeper Sapling",cat:"flowering",price:249,orig:null,badge:null,rating:4.6,reviews:56,emoji:"🌸",tag:"Auroville Farm",desc:"Fragrant night-blooming Mogra jasmine. Thrives in Tamil Nadu climate. Blooms in 3–4 months.",best:false,water:"Alternate days",sun:"Partial Sun",size:"Creeper",care:"Easy",harvest:"3–4 months",pot:"10 inch+"},
+  {id:6,name:"Premium Vermicompost (5 kg)",cat:"soil",price:299,orig:null,badge:"new",rating:4.8,reviews:171,emoji:"🌍",tag:"Auroville",desc:"Pure worm castings from Auroville bio-farm. Zero chemicals, odourless, enriched with microbes.",best:false,water:"N/A",sun:"N/A",size:"5 kg bag",care:"N/A",harvest:"N/A",pot:"N/A"},
+  {id:7,name:"Kagzi Lemon Sapling",cat:"fruit",price:299,orig:null,badge:null,rating:4.7,reviews:93,emoji:"🍋",tag:"Natural Farm",desc:"Prolific fruiting Kagzi lime — the most popular terrace variety in South India. Suitable for 12\" pots.",best:false,water:"Alternate days",sun:"Full Sun",size:"2–3 ft",care:"Easy",harvest:"Year 1–2",pot:"12 inch+"},
+  {id:8,name:"Garden Starter Tool Set",cat:"tools",price:599,orig:null,badge:"new",rating:4.5,reviews:38,emoji:"🛠",tag:"Essentials",desc:"Trowel, hand fork, pruner, spray bottle (1L), and gardening gloves — all you need to begin.",best:false,water:"N/A",sun:"N/A",size:"5-piece set",care:"N/A",harvest:"N/A",pot:"N/A"},
+  {id:9,name:"Chilli (Guntur) Sapling Pack",cat:"saplings",price:149,orig:null,badge:"hot",rating:4.8,reviews:127,emoji:"🌶",tag:"Natural Farm",desc:"Guntur variety — India's hottest chilli. Fast-growing, high yield. Ready in 45 days.",best:true,water:"Daily",sun:"Full Sun",size:"1–2 ft",care:"Easy",harvest:"45 days",pot:"8 inch+"},
+  {id:10,name:"Rose Grafted Sapling",cat:"flowering",price:199,orig:null,badge:null,rating:4.5,reviews:44,emoji:"🌹",tag:"Auroville Farm",desc:"Hybrid tea rose, grafted for terrace conditions. 5 colour variants available. Blooms year-round.",best:false,water:"Daily",sun:"Full Sun",size:"2–3 ft",care:"Moderate",harvest:"3 months",pot:"12 inch+"},
+  {id:11,name:"Cocopeat Grow Bag (Pack of 10)",cat:"soil",price:399,orig:499,badge:"sale",rating:4.6,reviews:62,emoji:"🪱",tag:"Eco Pack",desc:"Ready-to-use grow bags with cocopeat blend + perlite. Perfect water retention for terrace gardens.",best:false,water:"N/A",sun:"N/A",size:"10 bags",care:"N/A",harvest:"N/A",pot:"Bag included"},
+  {id:12,name:"Guava Sapling (Thailand Pink)",cat:"fruit",price:379,orig:null,badge:"new",rating:4.7,reviews:31,emoji:"🍐",tag:"Auroville Farm",desc:"Thailand pink guava — sweet, seedless variety. Compact tree ideal for containers. First fruit in 18 months.",best:false,water:"Alternate days",sun:"Full Sun",size:"3–5 ft",care:"Easy",harvest:"18 months",pot:"16 inch+"}
+];
+
+const CONSULTANTS = [
+  {id:1,name:"Priya Raghunathan",role:"Terrace Garden Specialist",exp:"8 yrs",rating:4.9,reviews:214,tags:["Kitchen Garden","Fruit Trees","Organic"],fee:499,avatar:"PR",next:"Today, 3 PM",bio:"Former urban agriculture researcher at IIT Madras. Specialises in setting up productive kitchen gardens on Chennai terraces."},
+  {id:2,name:"Karthik Sundaram",role:"Urban Farming Expert",exp:"6 yrs",rating:4.8,reviews:178,tags:["Hydroponics","Vertical Gardens","Balcony"],fee:599,avatar:"KS",next:"Tomorrow, 10 AM",bio:"Pioneer of low-cost hydroponic systems for apartments. Has set up 300+ balcony gardens across Chennai and Coimbatore."},
+  {id:3,name:"Anitha Krishnamurthy",role:"Plant Health Advisor",exp:"10 yrs",rating:5.0,reviews:301,tags:["Pest Control","Composting","Soil Health"],fee:699,avatar:"AK",next:"Today, 5 PM",bio:"Certified organic farmer from Auroville. Expert in natural pest management and composting techniques."},
+  {id:4,name:"Rajan Pillai",role:"Fruit Tree Specialist",exp:"12 yrs",rating:4.8,reviews:190,tags:["Grafting","Fruit Trees","Pruning"],fee:749,avatar:"RP",next:"Thursday, 11 AM",bio:"Professional horticulturist with 12 years experience in fruit tree cultivation across South India."}
+];
+
+const PLANS = [
+  {name:"Seedling",price:499,color:"#EAF3DE",tc:"#1C4A2E",bg:"#EAF3DE",features:["Monthly sapling delivery (2 plants)","Organic soil sachet included","Plant care guide library","WhatsApp helpline support","1 consultant chat / month"]},
+  {name:"Garden Pro",price:999,color:var_g,tc:"#fff",bg:"#1C4A2E",features:["Monthly delivery (5 plants + soil)","Priority consultant access (2 calls)","Bi-weekly garden check-in call","Pest & disease newsletter","10% off all shop purchases","Harvest tracking journal"],pop:true},
+  {name:"Terrace Master",price:2499,color:"#C4622D",tc:"#fff",bg:"#C4622D",features:["Monthly curated delivery (10 plants)","Dedicated consultant assigned","Monthly in-person / video visit","Full garden setup assistance (one-time)","15% off all shop purchases","Seasonal planting calendar","Priority WhatsApp group"]}
+];
+
+const FARMERS = [
+  {name:"Kuppusamy Natural Farm",loc:"Auroville, Puducherry",spec:"Rare saplings & vermicompost",emoji:"🌾"},
+  {name:"Meenakshi Organic Greens",loc:"Kovai, Tamil Nadu",spec:"Medicinal herbs & leafy greens",emoji:"🌿"},
+  {name:"Thevar Heritage Orchard",loc:"Madurai, Tamil Nadu",spec:"Native fruit tree varieties",emoji:"🌳"},
+  {name:"GreenRoots Collective",loc:"Auroville, Puducherry",spec:"Grow kits & eco-packaging",emoji:"🪱"}
+];
+
+const TESTIMONIALS = [
+  {name:"Kavitha R.",loc:"Adyar, Chennai",rating:5,text:"Ordered a beginner kit on a Sunday and it arrived Monday morning, packed so beautifully. The consultant Priya set up my entire 200 sqft terrace in one visit. Now I harvest tomatoes every week!",avatar:"KR"},
+  {name:"Suresh Nair",loc:"T. Nagar, Chennai",rating:5,text:"The Mango sapling I ordered from Fruitree is already flowering after 14 months. Couldn't believe it. The Auroville soil makes all the difference.",avatar:"SN"},
+  {name:"Deepa Menon",loc:"Coimbatore",rating:5,text:"I was skeptical about online plant shopping but Fruitree delivered 12 perfectly healthy saplings. The 7-day guarantee gave me confidence. Zero issues!",avatar:"DM"},
+  {name:"Arjun Balaji",loc:"Anna Nagar, Chennai",rating:4,text:"The Garden Pro subscription is genuinely worth it. Monthly delivery + WhatsApp support means I never have to worry. My terrace has gone from barren to lush in 3 months.",avatar:"AB"},
+  {name:"Lalitha Krishnan",loc:"Bengaluru",rating:5,text:"Karthik's hydroponic consultation changed my approach completely. He set up a vertical garden on my 80sqft balcony that now produces 2kg of greens per week.",avatar:"LK"},
+  {name:"Rajesh Pandian",loc:"Madurai",rating:5,text:"Fast, fresh, and genuinely organic. My curry leaf tree arrived with a note from the farmer in Auroville. That personal touch is rare!",avatar:"RP"}
+];
+
+const FAQS = [
+  {q:"How do you ensure plants survive delivery?",a:"All plants are carefully wrapped in breathable packaging with moisture-retaining cocopeat around the roots. We use cold chain logistics for long-distance orders and offer a 7-day live plant guarantee — if your plant arrives damaged or dies within 7 days, we replace it free."},
+  {q:"Do consultants travel to Chennai?",a:"Yes! All our consultants are based in Chennai, Coimbatore, and Puducherry and offer in-person visits within these cities. For other locations, video consultations are available. Travel charges apply for locations beyond 30km."},
+  {q:"What's the difference between a consultation and the SMB setup service?",a:"A consultation (₹499–₹749) is a 1-hour session where the advisor assesses your space and gives a personalised plan. The SMB setup service includes full implementation — we source plants, prepare soil beds, install irrigation, and set everything up. Pricing starts at ₹8,999 depending on area."},
+  {q:"Can I cancel or pause my Care Plan subscription?",a:"Yes, you can pause or cancel any Care Plan from your account dashboard, effective from the next billing cycle. There are no cancellation fees."},
+  {q:"Are all products certified organic?",a:"Yes. All plants and soil products are sourced from farms that follow organic practices. Our Auroville partner farms are NPOP-certified. We don't carry any products that use synthetic pesticides or chemical fertilisers."},
+  {q:"Which payment methods do you accept?",a:"We accept UPI (PhonePe, Google Pay, Paytm), credit/debit cards, net banking, and EMI (on orders above ₹3,000) via Razorpay. Cash on delivery is available for orders below ₹1,000 in Chennai."}
+];
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let cart = [];
+let currentCat = "all";
+let bookingConsultant = null;
+let bookingStep = 1;
+let bookingData = {};
+const var_g = "#1C4A2E";
+
+// ═══════════════════════════════════════════════
+// RENDER WEBSITE
+// ═══════════════════════════════════════════════
+function renderProducts(){
+  const grid = document.getElementById('product-grid');
+  const search = document.getElementById('search-input').value.toLowerCase();
+  let filtered = PRODUCTS.filter(p=>(currentCat==='all'||p.cat===currentCat)&&(search===''||p.name.toLowerCase().includes(search)));
+  document.getElementById('product-count').textContent = filtered.length+' items';
+  document.getElementById('empty-state').style.display = filtered.length?'none':'block';
+  grid.innerHTML = filtered.map(p=>`
+    <div class="card">
+      <div class="product-img">
+        ${p.emoji}
+        ${p.badge?`<span class="tag badge-${p.badge} badge-corner">${p.badge==='hot'?'🔥 Hot':p.badge==='sale'?'Sale':'New'}</span>`:''}
+        ${p.best?`<span class="tag badge-best badge-corner2">Bestseller</span>`:''}
+      </div>
+      <div class="product-body">
+        <div class="product-farm">${p.tag}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-desc">${p.desc}</div>
+        <div class="rating"><span class="stars">★★★★★</span><span class="rat-num">${p.rating}</span><span class="rat-cnt">(${p.reviews})</span></div>
+        <div class="product-footer">
+          <div><span class="price">₹${p.price}</span>${p.orig?`<span class="price-orig">₹${p.orig}</span>`:''}</div>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-outline btn-sm" onclick="openProductDetail(${p.id})">Details</button>
+            <button class="btn btn-primary btn-sm" id="add-btn-${p.id}" onclick="addToCart(${p.id})">+ Add</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderConsultants(){
+  const grid = document.getElementById('consultant-grid');
+  grid.innerHTML = CONSULTANTS.map(c=>`
+    <div class="cons-card">
+      <div style="display:flex;gap:14px;align-items:flex-start">
+        <div class="cons-avatar">${c.avatar}</div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:16px">${c.name}</div>
+          <div style="color:var(--muted);font-size:13px">${c.role} · ${c.exp} exp</div>
+          <div class="rating" style="margin-top:4px"><span class="stars">★</span><span class="rat-num">${c.rating}</span><span class="rat-cnt">(${c.reviews} sessions)</span></div>
+        </div>
+      </div>
+      <div class="cons-tags">${c.tags.map(t=>`<span class="cons-tag">${t}</span>`).join('')}</div>
+      <div class="cons-footer">
+        <div>
+          <div style="font-size:12px;color:var(--muted)">Next available</div>
+          <div style="font-size:13px;font-weight:700;color:var(--g)">🕐 ${c.next}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="fraunces" style="font-size:20px;color:var(--terra)">₹${c.fee}</div>
+          <button class="btn btn-primary btn-sm" style="margin-top:6px" onclick="openBooking(${c.id})">Book Now</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderPlans(){
+  const grid = document.getElementById('plan-grid');
+  grid.innerHTML = PLANS.map(p=>`
+    <div class="plan-card" style="background:${p.bg};border-color:${p.pop?'#A8D97A':'transparent'}">
+      ${p.pop?`<div class="plan-popular-badge"><span class="tag" style="background:#A8D97A;color:var(--g)">⭐ Most Popular</span></div>`:''}
+      <div class="fraunces" style="font-size:22px;font-weight:500;color:${p.tc}">${p.name}</div>
+      <div class="plan-price"><span class="amt" style="color:${p.tc}">₹${p.price}</span><span class="period" style="color:${p.tc}">/month</span></div>
+      <div style="margin-bottom:22px">${p.features.map(f=>`<div class="plan-feature" style="color:${p.tc}">${f}</div>`).join('')}</div>
+      <button class="btn btn-block" style="border:1.5px solid ${p.pop?'#A8D97A':p.tc};background:${p.pop?'#A8D97A':'transparent'};color:${p.pop?var_g:p.tc};font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;border-radius:100px;cursor:pointer">
+        ${p.name==='Terrace Master'?'Go Premium →':p.name==='Garden Pro'?'Get Started →':'Start Free Trial'}
+      </button>
+    </div>`).join('');
+}
+
+function renderFarmers(){
+  const list = document.getElementById('farmer-list');
+  list.innerHTML = FARMERS.map(f=>`
+    <div class="farmer-card">
+      <span style="font-size:36px">${f.emoji}</span>
+      <div>
+        <div style="color:#fff;font-weight:700;font-size:15px">${f.name}</div>
+        <div style="color:rgba(255,255,255,.45);font-size:12px;margin-top:2px">📍 ${f.loc}</div>
+        <div style="color:var(--msage);font-size:13px;margin-top:3px">${f.spec}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderTestimonials(){
+  const g = document.getElementById('testi-grid');
+  g.innerHTML = TESTIMONIALS.map(t=>`
+    <div class="testi-card">
+      <div class="testi-stars">${'★'.repeat(t.rating)}</div>
+      <p class="testi-text">"${t.text}"</p>
+      <div class="testi-author">
+        <div class="testi-avatar">${t.avatar}</div>
+        <div><div class="testi-name">${t.name}</div><div class="testi-loc">📍 ${t.loc}</div></div>
+      </div>
+    </div>`).join('');
+}
+
+function renderFAQ(){
+  const list = document.getElementById('faq-list');
+  list.innerHTML = FAQS.map((f,i)=>`
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(${i})">
+        ${f.q}
+        <span class="faq-icon" id="faq-icon-${i}">+</span>
+      </div>
+      <div class="faq-a" id="faq-a-${i}">${f.a}</div>
+    </div>`).join('');
+}
+
+function toggleFaq(i){
+  const a = document.getElementById('faq-a-'+i);
+  const ic = document.getElementById('faq-icon-'+i);
+  a.classList.toggle('open');
+  ic.classList.toggle('open');
+}
+
+// ═══════════════════════════════════════════════
+// CART
+// ═══════════════════════════════════════════════
+function addToCart(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  const ex = cart.find(c=>c.id===id);
+  if(ex) ex.qty++;
+  else cart.push({...p,qty:1});
+  const btn = document.getElementById('add-btn-'+id);
+  if(btn){btn.textContent='✓ Added';btn.style.background='#27500A';setTimeout(()=>{btn.textContent='+ Add';btn.style.background='';},1500)}
+  updateCartUI();
+}
+function removeFromCart(id){ cart = cart.filter(c=>c.id!==id); updateCartUI(); }
+function changeQty(id,d){
+  const item = cart.find(c=>c.id===id);
+  if(item){ item.qty+=d; if(item.qty<=0) removeFromCart(id); else updateCartUI(); }
+}
+function updateCartUI(){
+  const count = cart.reduce((a,c)=>a+c.qty,0);
+  const total = cart.reduce((a,c)=>a+c.price*c.qty,0);
+  const el = document.getElementById('cart-count');
+  el.textContent = count; el.style.display = count?'inline':'none';
+  const body = document.getElementById('cart-body');
+  const foot = document.getElementById('cart-foot');
+  if(cart.length===0){
+    body.innerHTML=`<div style="text-align:center;padding:48px 0;color:var(--muted)"><div style="font-size:48px;margin-bottom:14px">🪴</div><div style="font-size:16px;font-weight:600;margin-bottom:4px">Your cart is empty</div><div style="font-size:13px">Start growing your garden!</div><button class="btn btn-primary" style="margin-top:16px" onclick="toggleCart()">Browse Plants</button></div>`;
+    foot.innerHTML='';
+  } else {
+    body.innerHTML=cart.map(item=>`
+      <div class="cart-item">
+        <div class="cart-emoji">${item.emoji}</div>
+        <div style="flex:1">
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-price">₹${item.price} × ${item.qty} = ₹${item.price*item.qty}</div>
+          <div class="qty-ctrl">
+            <button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button>
+            <span style="font-size:14px;font-weight:600;min-width:16px;text-align:center">${item.qty}</span>
+            <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
+          </div>
+        </div>
+        <button onclick="removeFromCart(${item.id})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;align-self:flex-start">✕</button>
+      </div>`).join('');
+    foot.innerHTML=`
+      <div style="display:flex;justify-content:space-between;margin-bottom:14px;font-size:14px">
+        <span style="color:var(--muted)">Subtotal (${count} items)</span>
+        <span class="fraunces" style="font-size:20px;color:var(--g)">₹${total}</span>
+      </div>
+      ${total<499?`<div style="background:var(--cream);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--g);margin-bottom:12px">Add ₹${499-total} more for free delivery 🚚</div>`:'<div style="background:var(--lsage);border-radius:8px;padding:8px 12px;font-size:12px;color:#27500A;margin-bottom:12px">🎉 You qualify for free delivery!</div>'}
+      <button class="btn btn-primary btn-block" onclick="checkout()">Proceed to Checkout →</button>
+      <div style="display:flex;justify-content:center;gap:8px;margin-top:10px;color:var(--muted);font-size:12px">🔒 Secured by Razorpay · 📦 Ships from Auroville</div>`;
+  }
+}
+function checkout(){ alert('🎉 Checkout would connect to Razorpay/PhonePe payment gateway here!\n\nPayment methods: UPI, Cards, Net Banking, EMI'); }
+function toggleCart(){
+  document.getElementById('cart-drawer').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('on');
+}
+function closeAll(){
+  document.getElementById('cart-drawer').classList.remove('open');
+  document.getElementById('overlay').classList.remove('on');
+}
+
+// ═══════════════════════════════════════════════
+// BOOKING
+// ═══════════════════════════════════════════════
+function openBooking(cid){
+  bookingConsultant = CONSULTANTS.find(c=>c.id===cid);
+  bookingStep=1; bookingData={};
+  renderBookingStep();
+  openModal('booking-modal');
+}
+function renderBookingStep(){
+  const c = bookingConsultant;
+  const steps = ['Pick Slot','Your Details','Review & Pay','Confirmed'];
+  const wizardHTML = `<div class="wizard-steps">${steps.map((s,i)=>`<div class="w-step${i+1===bookingStep?' active':i+1<bookingStep?' done':''}">${i+1<bookingStep?'✓ ':''+(i+1)+'. '}${s}</div>`).join('')}</div>`;
+  const card = `<div style="display:flex;gap:12px;background:var(--cream);border-radius:12px;padding:14px;margin-bottom:22px">
+    <div class="cons-avatar">${c.avatar}</div>
+    <div><div style="font-weight:700">${c.name}</div><div style="font-size:13px;color:var(--muted)">${c.role}</div><div style="font-size:14px;color:var(--terra);font-weight:700;margin-top:2px">₹${c.fee} / session</div></div>
+  </div>`;
+  let body='';
+  if(bookingStep===1){
+    body=`${card}
+      <div class="form-group"><label>Select Date</label><input type="date" id="b-date" value="${bookingData.date||''}" min="${new Date().toISOString().split('T')[0]}" /></div>
+      <div class="form-group"><label>Select Time Slot</label>
+        <div class="time-slots">${['9 AM','10 AM','11 AM','2 PM','3 PM','4 PM','5 PM'].map(t=>`<div class="slot${bookingData.time===t?' sel':''}" onclick="selectSlot('${t}')">${t}</div>`).join('')}</div>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="nextBooking()" style="margin-top:20px">Continue →</button>`;
+  } else if(bookingStep===2){
+    body=`${card}
+      <div class="form-group"><label>Your Name</label><input type="text" id="b-name" value="${bookingData.name||''}" placeholder="Full name" /></div>
+      <div class="form-group"><label>Phone / WhatsApp</label><input type="text" id="b-phone" value="${bookingData.phone||''}" placeholder="+91 99999 00000" /></div>
+      <div class="form-group"><label>Session Type</label>
+        <div style="display:flex;gap:10px">
+          ${['Video Call','In-Person Visit'].map(t=>`<button onclick="selectType('${t}')" style="flex:1;padding:10px;border:1.5px solid ${bookingData.type===t?'var(--g)':'var(--border)'};border-radius:10px;background:${bookingData.type===t?'var(--lsage)':'#fff'};font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;cursor:pointer;font-weight:${bookingData.type===t?'700':'400'};color:${bookingData.type===t?'var(--g)':'var(--text)'}">${t}</button>`).join('')}
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:8px">
+        <button class="btn btn-outline" onclick="prevBooking()">← Back</button>
+        <button class="btn btn-primary" style="flex:1" onclick="nextBooking()">Review Booking →</button>
+      </div>`;
+  } else if(bookingStep===3){
+    body=`${card}
+      <div style="background:var(--cream);border-radius:14px;padding:18px;margin-bottom:20px">
+        <div style="font-weight:700;margin-bottom:12px;font-size:15px">Booking Summary</div>
+        <div class="summary-row"><span>Date</span><strong>${bookingData.date}</strong></div>
+        <div class="summary-row"><span>Time</span><strong>${bookingData.time}</strong></div>
+        <div class="summary-row"><span>Session type</span><strong>${bookingData.type||'Video Call'}</strong></div>
+        <div class="summary-row"><span>Name</span><strong>${bookingData.name}</strong></div>
+        <div class="summary-row summary-total"><span>Total</span><span class="fraunces" style="font-size:20px;color:var(--terra)">₹${c.fee}</span></div>
+      </div>
+      <div style="background:var(--lsage);border-radius:10px;padding:12px;font-size:13px;color:var(--g);margin-bottom:20px">💬 You'll receive a WhatsApp confirmation and video link within 15 minutes.</div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-outline" onclick="prevBooking()">← Back</button>
+        <button class="btn btn-primary" style="flex:1" onclick="confirmBooking()">Pay ₹${c.fee} & Confirm</button>
+      </div>`;
+  } else if(bookingStep===4){
+    body=`<div style="text-align:center;padding:20px 0">
+      <div style="font-size:64px;margin-bottom:16px">🌿</div>
+      <h3 class="fraunces" style="font-size:26px;color:var(--g);margin-bottom:10px">Booking Confirmed!</h3>
+      <p style="color:var(--muted);line-height:1.65;margin-bottom:6px">Your session with <strong>${c.name}</strong> is confirmed for</p>
+      <p style="font-weight:700;color:var(--g);font-size:15px">${bookingData.date} at ${bookingData.time}</p>
+      <div style="background:var(--lsage);border-radius:12px;padding:14px;margin:20px 0;font-size:13px;color:var(--g)">📱 A confirmation has been sent to <strong>${bookingData.phone}</strong> on WhatsApp.</div>
+      <button class="btn btn-primary btn-block" onclick="closeModal('booking-modal')">Done ✓</button>
+    </div>`;
+  }
+  document.getElementById('booking-content').innerHTML = wizardHTML + body;
+}
+function selectSlot(t){bookingData.time=t;renderBookingStep()}
+function selectType(t){bookingData.type=t;renderBookingStep()}
+function nextBooking(){
+  if(bookingStep===1){
+    const d=document.getElementById('b-date')?.value;
+    if(!d||!bookingData.time){alert('Please select a date and time slot.');return}
+    bookingData.date=d;
+  } else if(bookingStep===2){
+    const n=document.getElementById('b-name')?.value;
+    const ph=document.getElementById('b-phone')?.value;
+    if(!n||!ph){alert('Please fill in your name and phone number.');return}
+    bookingData.name=n; bookingData.phone=ph;
+  }
+  bookingStep++; renderBookingStep();
+}
+function prevBooking(){bookingStep--;renderBookingStep()}
+function confirmBooking(){bookingStep=4;renderBookingStep()}
+
+// ═══════════════════════════════════════════════
+// PRODUCT DETAIL
+// ═══════════════════════════════════════════════
+function openProductDetail(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  document.getElementById('pdm-title').textContent = p.name;
+  const reviews = [
+    {name:"Kavitha R.",rating:5,text:"Arrived healthy and well-packed. Already seeing new leaves!"},
+    {name:"Suresh N.",rating:5,text:"Exactly as described. The Auroville quality is clearly visible."},
+    {name:"Priya M.",rating:4,text:"Good quality. A bit smaller than expected but growing well."}
+  ];
+  document.getElementById('product-detail-content').innerHTML=`
+    <div class="pdm-grid">
+      <div>
+        <div class="pdm-img">${p.emoji}</div>
+        <div class="care-grid">
+          <div class="care-item"><div class="care-icon">💧</div><div class="care-label">Water</div><div class="care-val">${p.water}</div></div>
+          <div class="care-item"><div class="care-icon">☀️</div><div class="care-label">Sunlight</div><div class="care-val">${p.sun}</div></div>
+          <div class="care-item"><div class="care-icon">📏</div><div class="care-label">Size</div><div class="care-val">${p.size}</div></div>
+          <div class="care-item"><div class="care-icon">🪴</div><div class="care-label">Min Pot</div><div class="care-val">${p.pot}</div></div>
+          <div class="care-item"><div class="care-icon">⚡</div><div class="care-label">Care Level</div><div class="care-val">${p.care}</div></div>
+          <div class="care-item"><div class="care-icon">🌾</div><div class="care-label">Harvest</div><div class="care-val">${p.harvest}</div></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--sage);font-weight:700;margin-bottom:6px">${p.tag}</div>
+        <p style="font-size:14px;line-height:1.7;color:var(--muted);margin-bottom:18px">${p.desc}</p>
+        <div class="rating" style="margin-bottom:14px"><span class="stars">★★★★★</span><span class="rat-num">${p.rating}</span><span class="rat-cnt">(${p.reviews} reviews)</span></div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:18px">
+          <span class="fraunces" style="font-size:28px;color:var(--g)">₹${p.price}</span>
+          ${p.orig?`<span style="font-size:14px;color:var(--muted);text-decoration:line-through">₹${p.orig}</span><span class="tag badge-sale">${Math.round((1-p.price/p.orig)*100)}% OFF</span>`:''}
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:24px">
+          <button class="btn btn-primary" style="flex:1" onclick="addToCart(${p.id});closeModal('product-modal')">Add to Cart</button>
+          <button class="btn btn-outline" style="flex:1">♡ Wishlist</button>
+        </div>
+        <div style="background:var(--lsage);border-radius:10px;padding:12px;font-size:13px;color:var(--g)">🌱 7-day live plant guarantee · 🚚 Free delivery on orders ₹499+</div>
+        <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
+          <div style="font-weight:700;margin-bottom:12px">Customer Reviews</div>
+          ${reviews.map(r=>`<div class="review-item"><div style="display:flex;justify-content:space-between"><span style="font-weight:600;font-size:13px">${r.name}</span><span style="color:var(--gold)">${'★'.repeat(r.rating)}</span></div><div style="font-size:13px;color:var(--muted);margin-top:4px">${r.text}</div></div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  openModal('product-modal');
+}
+
+// ═══════════════════════════════════════════════
+// FILTERS & NAV
+// ═══════════════════════════════════════════════
+function setCat(el,cat){
+  currentCat=cat;
+  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  filterProducts();
+}
+function filterProducts(){ renderProducts(); }
+function sortProducts(val){
+  if(val==='price-asc') PRODUCTS.sort((a,b)=>a.price-b.price);
+  else if(val==='price-desc') PRODUCTS.sort((a,b)=>b.price-a.price);
+  else if(val==='rating') PRODUCTS.sort((a,b)=>b.rating-a.rating);
+  else if(val==='bestseller') PRODUCTS.sort((a,b)=>b.best-a.best);
+  renderProducts();
+}
+function navGo(el,sec){
+  document.querySelectorAll('.nav-link').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+  scrollToSec(sec);
+}
+function scrollToSec(id){
+  const el=document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function openModal(id){document.getElementById(id).classList.add('on')}
+function closeModal(id){document.getElementById(id).classList.remove('on')}
+function openEnquiry(){openModal('enquiry-modal')}
+function submitEnquiry(){alert('✅ Enquiry submitted! Our team will contact you within 24 hours.');closeModal('enquiry-modal')}
+function nlSubscribe(){
+  const v=document.getElementById('nl-email').value;
+  if(!v.includes('@')){alert('Please enter a valid email.');return}
+  alert('🌿 You\'re subscribed! Welcome to the Fruitree community.');
+  document.getElementById('nl-email').value='';
+}
+
+// ═══════════════════════════════════════════════
+// ADMIN
+// ═══════════════════════════════════════════════
+function toggleAdmin(){
+  const site=document.getElementById('site-view');
+  const admin=document.getElementById('admin-view');
+  const isAdmin=admin.style.display==='block';
+  site.style.display=isAdmin?'block':'none';
+  admin.style.display=isAdmin?'none':'block';
+  if(!isAdmin) initAdmin();
+}
+function aNav(el,panel){
+  document.querySelectorAll('.a-nav-item').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(panel).classList.add('active');
+}
+function switchTab(el,id){
+  el.parentElement.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#a-bookings > div[id$="-bk"]').forEach(d=>d.style.display='none');
+  const el2=document.getElementById(id); if(el2) el2.style.display='flex';
+}
+function openAddProduct(){
+  const f=document.getElementById('add-product-form');
+  f.style.display=f.style.display==='none'?'block':'none';
+}
+function initAdmin(){
+  renderAdminOverviewOrders();
+  renderAdminOrders();
+  renderAdminBookings();
+  renderAdminProducts();
+  renderAdminConsultants();
+  renderSubsTable();
+  renderCustomers();
+  renderInventory();
+  renderNotifs();
+  renderTopProducts();
+  setTimeout(()=>{initCharts();},200);
+}
+const ORDERS = [
+  {id:"#FT-1041",customer:"Kavitha R.",items:"Cherry Tomato Sapling ×2",total:398,status:"delivered",date:"24 May"},
+  {id:"#FT-1040",customer:"Suresh Nair",items:"Terrace Grow Kit",total:1299,status:"confirmed",date:"24 May"},
+  {id:"#FT-1039",customer:"Deepa Menon",items:"Vermicompost 5kg",total:299,status:"pending",date:"23 May"},
+  {id:"#FT-1038",customer:"Arjun B.",items:"Mango Sapling, Lemon Sapling",total:648,status:"delivered",date:"23 May"},
+  {id:"#FT-1037",customer:"Lalitha K.",items:"Herb Starter Kit",total:449,status:"confirmed",date:"22 May"},
+  {id:"#FT-1036",customer:"Rajesh P.",items:"Grow Kit + Tools",total:1898,status:"delivered",date:"22 May"},
+  {id:"#FT-1035",customer:"Meena S.",items:"Jasmine Sapling ×3",total:747,status:"cancelled",date:"21 May"}
+];
+const BOOKINGS_DATA = [
+  {id:"#BK-201",customer:"Arjun B.",consultant:"Priya R.",date:"26 May 2025",time:"3 PM",type:"Video Call",fee:499,status:"confirmed"},
+  {id:"#BK-200",customer:"Kavitha R.",consultant:"Anitha K.",date:"27 May 2025",time:"5 PM",type:"In-Person",fee:699,status:"confirmed"},
+  {id:"#BK-199",customer:"Vikram S.",consultant:"Karthik S.",date:"28 May 2025",time:"10 AM",type:"Video Call",fee:599,status:"pending"},
+  {id:"#BK-198",customer:"Priya M.",consultant:"Rajan P.",date:"29 May 2025",time:"11 AM",type:"In-Person",fee:749,status:"confirmed"}
+];
+function renderAdminOverviewOrders(){
+  document.getElementById('overview-orders').innerHTML=`
+    <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+    <tbody>${ORDERS.slice(0,5).map(o=>`<tr><td style="font-weight:600;color:var(--g)">${o.id}</td><td>${o.customer}</td><td style="color:var(--muted)">${o.items}</td><td style="font-weight:700">₹${o.total}</td><td><span class="status s-${o.status}">${o.status.charAt(0).toUpperCase()+o.status.slice(1)}</span></td><td style="color:var(--muted)">${o.date}</td><td><button class="action-btn">View</button></td></tr>`).join('')}</tbody>`;
+}
+function renderAdminOrders(){
+  document.getElementById('orders-table').innerHTML=`
+    <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+    <tbody>${ORDERS.map(o=>`<tr><td style="font-weight:600;color:var(--g)">${o.id}</td><td>${o.customer}</td><td style="color:var(--muted)">${o.items}</td><td style="font-weight:700">₹${o.total}</td><td><span class="status s-${o.status}">${o.status.charAt(0).toUpperCase()+o.status.slice(1)}</span></td><td style="color:var(--muted)">${o.date}</td><td style="display:flex;gap:6px"><button class="action-btn">View</button><button class="action-btn">Update</button></td></tr>`).join('')}</tbody>`;
+}
+function renderAdminBookings(){
+  const list=document.getElementById('upcoming-bk');
+  if(list) list.innerHTML=BOOKINGS_DATA.map(b=>`
+    <div class="booking-card">
+      <div class="cons-avatar" style="width:44px;height:44px;font-size:14px">${b.consultant.split(' ').map(w=>w[0]).join('')}</div>
+      <div>
+        <div style="font-weight:700;font-size:14px">${b.customer}</div>
+        <div style="font-size:13px;color:var(--muted)">${b.consultant} · ${b.type}</div>
+        <div style="font-size:12px;color:var(--g);font-weight:600;margin-top:2px">📅 ${b.date} at ${b.time}</div>
+      </div>
+      <span class="status s-${b.status}">${b.status.charAt(0).toUpperCase()+b.status.slice(1)}</span>
+      <div style="display:flex;gap:6px">
+        <button class="action-btn">View</button>
+        <button class="action-btn action-del">Cancel</button>
+      </div>
+    </div>`).join('');
+}
+function renderAdminProducts(){
+  document.getElementById('admin-products-table').innerHTML=`
+    <thead><tr><th></th><th>Product</th><th>Category</th><th>Price</th><th>Rating</th><th>Stock</th><th>Actions</th></tr></thead>
+    <tbody>${PRODUCTS.map(p=>`<tr><td style="font-size:24px">${p.emoji}</td><td><div style="font-weight:600">${p.name}</div><div style="font-size:12px;color:var(--sage)">${p.tag}</div></td><td style="color:var(--muted);text-transform:capitalize">${p.cat}</td><td style="font-weight:700">₹${p.price}</td><td>⭐ ${p.rating} <span style="color:var(--muted);font-size:12px">(${p.reviews})</span></td><td><span class="inv-badge ${Math.random()>.3?'inv-ok':'inv-low'}">${Math.floor(Math.random()*40+5)} units</span></td><td style="display:flex;gap:6px"><button class="action-btn">Edit</button><button class="action-btn action-del">Delete</button></td></tr>`).join('')}</tbody>`;
+}
+function renderAdminConsultants(){
+  document.getElementById('admin-cons-table').innerHTML=`
+    <thead><tr><th>Consultant</th><th>Specialisation</th><th>Rating</th><th>Sessions</th><th>Fee</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>${CONSULTANTS.map(c=>`<tr><td><div style="display:flex;align-items:center;gap:10px"><div class="cons-avatar" style="width:36px;height:36px;font-size:13px">${c.avatar}</div><div><div style="font-weight:600">${c.name}</div><div style="font-size:12px;color:var(--muted)">${c.role}</div></div></div></td><td style="color:var(--muted)">${c.tags.join(', ')}</td><td>⭐ ${c.rating}</td><td style="font-weight:600">${c.reviews}</td><td style="font-weight:700">₹${c.fee}</td><td><span class="status s-confirmed">Active</span></td><td style="display:flex;gap:6px"><button class="action-btn">Edit</button><button class="action-btn action-del">Remove</button></td></tr>`).join('')}</tbody>`;
+}
+function renderSubsTable(){
+  const subs=[
+    {name:"Kavitha R.",plan:"Garden Pro",since:"Jan 2025",next:"1 Jun",status:"active",amount:999},
+    {name:"Suresh N.",plan:"Seedling",since:"Mar 2025",next:"1 Jun",status:"active",amount:499},
+    {name:"Deepa M.",plan:"Terrace Master",since:"Feb 2025",next:"1 Jun",status:"active",amount:2499},
+    {name:"Arjun B.",plan:"Garden Pro",since:"Apr 2025",next:"1 Jun",status:"paused",amount:999}
+  ];
+  document.getElementById('subs-table').innerHTML=`
+    <thead><tr><th>Customer</th><th>Plan</th><th>Since</th><th>Next Renewal</th><th>Monthly</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>${subs.map(s=>`<tr><td style="font-weight:600">${s.name}</td><td>${s.plan}</td><td style="color:var(--muted)">${s.since}</td><td style="font-weight:600;color:var(--g)">${s.next}</td><td style="font-weight:700">₹${s.amount}</td><td><span class="status ${s.status==='active'?'s-confirmed':'s-pending'}">${s.status.charAt(0).toUpperCase()+s.status.slice(1)}</span></td><td><button class="action-btn">Manage</button></td></tr>`).join('')}</tbody>`;
+}
+function renderCustomers(){
+  const custs=[
+    {name:"Kavitha R.",email:"kavitha@gmail.com",orders:8,spent:4290,plan:"Garden Pro",joined:"Jan 2025"},
+    {name:"Suresh Nair",email:"suresh.n@gmail.com",orders:5,spent:2890,plan:"Seedling",joined:"Mar 2025"},
+    {name:"Deepa Menon",email:"deepa.m@gmail.com",orders:12,spent:8750,plan:"Terrace Master",joined:"Nov 2024"},
+    {name:"Arjun Balaji",email:"arjun.b@gmail.com",orders:4,spent:1980,plan:"Garden Pro",joined:"Apr 2025"},
+    {name:"Lalitha K.",email:"lalitha.k@gmail.com",orders:3,spent:1340,plan:"None",joined:"May 2025"},
+    {name:"Rajesh P.",email:"rajesh.p@gmail.com",orders:6,spent:3120,plan:"None",joined:"Feb 2025"}
+  ];
+  document.getElementById('customers-table').innerHTML=`
+    <thead><tr><th>Customer</th><th>Email</th><th>Orders</th><th>Total Spent</th><th>Active Plan</th><th>Joined</th><th>Action</th></tr></thead>
+    <tbody>${custs.map(c=>`<tr><td style="font-weight:600">${c.name}</td><td style="color:var(--muted)">${c.email}</td><td style="font-weight:600;text-align:center">${c.orders}</td><td style="font-weight:700;color:var(--g)">₹${c.spent.toLocaleString()}</td><td><span class="status ${c.plan!=='None'?'s-confirmed':'s-pending'}">${c.plan}</span></td><td style="color:var(--muted)">${c.joined}</td><td><button class="action-btn">Profile</button></td></tr>`).join('')}</tbody>`;
+}
+function renderInventory(){
+  document.getElementById('inventory-table').innerHTML=`
+    <thead><tr><th>Product</th><th>Category</th><th>In Stock</th><th>Reserved</th><th>Available</th><th>Farm Source</th><th>Status</th></tr></thead>
+    <tbody>${PRODUCTS.map(p=>{const s=Math.floor(Math.random()*45+2);const r=Math.floor(Math.random()*8);const a=s-r;const st=a>10?'inv-ok':a>2?'inv-low':'inv-out';return`<tr><td><span style="font-size:18px">${p.emoji}</span> ${p.name}</td><td style="color:var(--muted);text-transform:capitalize">${p.cat}</td><td style="font-weight:600">${s}</td><td style="color:var(--terra)">${r}</td><td style="font-weight:700">${a}</td><td style="font-size:12px;color:var(--muted)">${p.tag}</td><td><span class="inv-badge ${st}">${st==='inv-ok'?'In Stock':st==='inv-low'?'Low Stock':'Out of Stock'}</span></td></tr>`}).join('')}</tbody>`;
+}
+function renderNotifs(){
+  const notifs=[
+    {icon:"📦",text:"New order #FT-1041 from Kavitha R. for ₹398",time:"2 min ago",col:"#EAF3DE"},
+    {icon:"📅",text:"Booking #BK-201 confirmed — Arjun B. with Priya R. on 26 May",time:"15 min ago",col:"#E6F1FB"},
+    {icon:"⚠️",text:"Low stock alert: Cherry Tomato Sapling — only 4 units remaining",time:"1 hour ago",col:"#FAEEDA"},
+    {icon:"🌟",text:"New 5-star review received for Terrace Grow Kit",time:"2 hours ago",col:"#FAEEDA"},
+    {icon:"📧",text:"Newsletter sent to 3,412 subscribers — 38.4% open rate",time:"3 hours ago",col:"#EAF3DE"},
+    {icon:"💳",text:"New Garden Pro subscription from Deepa Menon — ₹999/month",time:"5 hours ago",col:"#EAF3DE"},
+    {icon:"🔴",text:"Payment failed for order #FT-1030 — customer notified",time:"Yesterday",col:"#FCEBEB"}
+  ];
+  document.getElementById('notif-list').innerHTML=notifs.map(n=>`
+    <div class="notif" style="background:${n.col}">
+      <span class="notif-icon">${n.icon}</span>
+      <div><div class="notif-text">${n.text}</div><div class="notif-time">${n.time}</div></div>
+    </div>`).join('');
+}
+function renderTopProducts(){
+  document.getElementById('top-products-table').innerHTML=`
+    <thead><tr><th>Product</th><th>Units Sold</th><th>Revenue</th><th>Rating</th><th>Trend</th></tr></thead>
+    <tbody>${PRODUCTS.sort((a,b)=>b.reviews-a.reviews).slice(0,6).map(p=>{const u=Math.floor(p.reviews*0.4);return`<tr><td><span style="font-size:18px">${p.emoji}</span> ${p.name}</td><td style="font-weight:600">${u}</td><td style="font-weight:700;color:var(--g)">₹${(u*p.price).toLocaleString()}</td><td>⭐ ${p.rating}</td><td style="color:#27500A;font-weight:600">▲ ${(Math.random()*20+5).toFixed(1)}%</td></tr>`}).join('')}</tbody>`;
+}
+function initCharts(){
+  const months=['Dec','Jan','Feb','Mar','Apr','May'];
+  const rev=[124000,148000,165000,192000,241000,284320];
+  new Chart(document.getElementById('rev-chart'),{
+    type:'bar',data:{labels:months,datasets:[{label:'Revenue (₹)',data:rev,backgroundColor:'rgba(28,74,46,0.85)',borderRadius:8,borderSkipped:false},{label:'Orders',data:[89,112,134,156,201,347],backgroundColor:'rgba(168,217,122,0.5)',borderRadius:8,yAxisID:'y2'}]},
+    options:{responsive:true,maintainAspectRatio:false,scales:{y:{ticks:{callback:v=>'₹'+v.toLocaleString()}},y2:{position:'right',grid:{drawOnChartArea:false}}},plugins:{legend:{position:'top'}}}
+  });
+  new Chart(document.getElementById('cat-chart'),{
+    type:'doughnut',data:{labels:['Saplings','Fruit Trees','Grow Kits','Herbs','Soil','Tools'],datasets:[{data:[34,28,18,11,6,3],backgroundColor:['#1C4A2E','#6B9E5E','#A8D97A','#C4622D','#D4A853','#888780']}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right'}}}
+  });
+  new Chart(document.getElementById('book-chart'),{
+    type:'line',data:{labels:months,datasets:[{label:'Bookings',data:[12,18,22,31,51,89],borderColor:'#C4622D',backgroundColor:'rgba(196,98,45,0.1)',fill:true,tension:0.4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}
+  });
+  new Chart(document.getElementById('visitor-chart'),{
+    type:'line',data:{labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],datasets:[{label:'Visitors',data:[420,510,480,670,590,810,720],borderColor:'#1C4A2E',backgroundColor:'rgba(28,74,46,0.08)',fill:true,tension:0.4},{label:'Orders',data:[18,22,19,31,27,44,38],borderColor:'#A8D97A',backgroundColor:'rgba(168,217,122,0.1)',fill:true,tension:0.4}]},
+    options:{responsive:true,maintainAspectRatio:false}
+  });
+}
+
+// ═══ INIT ═══
+renderProducts();
+renderConsultants();
+renderPlans();
+renderFarmers();
+renderTestimonials();
+renderFAQ();
+updateCartUI();
+</script>
+</body>
+</html>
+HTMLEOF
+echo "Done: $(wc -l < /mnt/user-data/outputs/fruitree.html) lines"
+Output
